@@ -1,12 +1,12 @@
 {
-  "name": "rest",
+  "name": "graphql-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "API GraphQL con GraphQL Yoga - Academia de idiomas",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --watch server.js"
   },
   "engines": {
     "node": ">=20"
@@ -14,12 +14,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "chalk": "^4.1.2",
-    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.10.4",
     "mongoose": "^9.9.4"
   }
 }
