@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal GraphQL | Academia de Idiomas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --success-text: #166534;
+      --error-bg: #fef2f2;
+      --error-border: #fecaca;
+      --error-text: #991b1b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 40px 16px;
+    }
+
+    .layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+      padding: 28px;
+    }
+
+    .header { margin-bottom: 24px; }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #eff6ff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+
+    .badge.graphql { color: #d33b99; background: #fdf2f8; }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+
+    .header p { font-size: 13px; color: var(--text-muted); }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin: 20px 0 12px 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .full-width { grid-column: span 2; }
+
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+    label { font-size: 13px; font-weight: 500; color: #334155; }
+
+    input, select {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: #fff;
+      color: var(--text-main);
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input::placeholder { color: #94a3b8; }
+
+    input:focus, select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-container input { margin-top: 2px; cursor: pointer; accent-color: var(--primary); width: auto; }
+
+    .checkbox-text { display: flex; flex-direction: column; }
+    .checkbox-text span:first-child { font-size: 13px; font-weight: 600; }
+    .checkbox-text span:last-child { font-size: 12px; color: var(--text-muted); }
+
+    #campoMatricula { display: none; margin-top: 8px; }
+
+    button[type="submit"], .btn {
+      font-family: inherit;
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    button[type="submit"]:hover, .btn:hover { background: var(--primary-hover); }
+    button[type="submit"]:active, .btn:active { transform: scale(0.99); }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      margin-top: 0;
+    }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    .alert {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .alert.success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); }
+    .alert.error { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error-text); }
+
+    .search-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .search-row .btn { width: auto; margin-top: 0; padding: 9px 18px; }
+
+    .filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+
+    @media (max-width: 1100px) {
+      .filter-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .table-wrapper { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    tr:hover td { background: #f8fafc; }
+
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    .pill.descuento { background: var(--success-bg); color: var(--success-text); }
+
+    .muted { color: var(--text-muted); font-size: 12px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- ══ Registro de alumno ══ -->
+    <div class="card">
+      <div class="header">
+        <span class="badge graphql">API GraphQL</span>
+        <h1>Inscripción de alumno</h1>
+        <p>Mutation <code>registrarAlumno</code></p>
+      </div>
+
+      <form id="registroForm">
+        <div class="section-title">Información personal</div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" required placeholder="Ej. Sopas Mango Ataulfo">
+          </div>
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" required placeholder="sopas@ejemplo.com">
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono de contacto</label>
+            <input type="tel" id="telefono" required placeholder="55 1234 5678">
+          </div>
+        </div>
+
+        <div class="section-title">Programa académico</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="idiomaNativo">Idioma materno</label>
+            <input type="text" id="idiomaNativo" required placeholder="Español">
+          </div>
+          <div class="form-group">
+            <label for="idiomaAprender">Idioma a cursar</label>
+            <select id="idiomaAprender">
+              <option value="Inglés">Inglés</option>
+              <option value="Francés">Francés</option>
+              <option value="Alemán">Alemán</option>
+              <option value="Italiano">Italiano</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="quienRecomendo">¿Quién te recomendó? <span style="font-weight: 400; color: var(--text-muted);">(Opcional)</span></label>
+            <input type="text" id="quienRecomendo" placeholder="Nombre completo del referente">
+          </div>
+        </div>
+
+        <div class="section-title">Beneficios & Pago</div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="checkbox-container">
+              <input type="checkbox" id="familiarInscrito">
+              <div class="checkbox-text">
+                <span>Familiar previamente inscrito</span>
+                <span>Aplica un 5% de descuento directo en las colegiaturas sucesivas.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group full-width" id="campoMatricula">
+            <label for="matriculaFamiliar">Matrícula del familiar</label>
+            <input type="text" id="matriculaFamiliar" placeholder="Ej. ALUM-2026-004">
+          </div>
+
+          <div class="form-group">
+            <label for="tarjeta">Número de tarjeta</label>
+            <input type="text" id="tarjeta" required placeholder="•••• •••• •••• ••••" maxlength="19">
+          </div>
+          <div class="form-group">
+            <label for="nivel">Nivel</label>
+            <input type="number" id="nivel" value="1" min="1" max="12" required>
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmit">Completar registro</button>
+      </form>
+
+      <div id="alertaRegistro" class="alert"></div>
+    </div>
+
+    <!-- ══ Consultas ══ -->
+    <div class="card">
+      <div class="header">
+        <span class="badge graphql">API GraphQL</span>
+        <h1>Alumnos registrados</h1>
+        <p>Queries <code>alumnos(filtro)</code> y <code>alumno(email)</code></p>
+      </div>
+
+      <div class="filter-grid">
+        <div class="form-group">
+          <label for="fNombre">Nombre</label>
+          <input type="text" id="fNombre" placeholder="Parcial, sin acentos">
+        </div>
+        <div class="form-group">
+          <label for="fEmail">Email</label>
+          <input type="text" id="fEmail" placeholder="Exacto">
+        </div>
+        <div class="form-group">
+          <label for="fTelefono">Teléfono</label>
+          <input type="text" id="fTelefono" placeholder="Solo dígitos">
+        </div>
+        <div class="form-group">
+          <label for="fIdioma">Idioma a aprender</label>
+          <input type="text" id="fIdioma" placeholder="Ej. Ingles">
+        </div>
+        <div class="form-group">
+          <label for="fNivel">Nivel</label>
+          <input type="number" id="fNivel" min="1" max="12" placeholder="1-12">
+        </div>
+        <div class="form-group">
+          <label for="fFamiliar">Familiar inscrito</label>
+          <select id="fFamiliar">
+            <option value="">Todos</option>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <button class="btn" id="btnBuscar">Buscar</button>
+        <button class="btn btn-secondary" id="btnListar">Ver todos</button>
+      </div>
+
+      <div id="alertaConsulta" class="alert"></div>
+
+      <div class="table-wrapper">
+        <table id="tablaAlumnos" style="display:none;">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Idioma</th>
+              <th>Nivel</th>
+              <th>Desc. familiar</th>
+              <th>Tarjeta</th>
+              <th>Registro</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state">Cargando alumnos…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const GRAPHQL_URL = '/graphql';
+
+    const MUTATION_REGISTRAR = `
+      mutation RegistrarAlumno($input: AlumnoInput!) {
+        registrarAlumno(input: $input) {
+          id
+          nombre
+          email
+          fechaRegistro
+        }
+      }`;
+
+    const CAMPOS_ALUMNO = `
+      id
+      nombre
+      email
+      telefono
+      idiomaNativo
+      idiomaAprender
+      nivel
+      familiarInscrito
+      matriculaFamiliar
+      quienRecomendo
+      medioPagoDefault { numeroTarjeta titular }
+      fechaRegistro`;
+
+    const QUERY_ALUMNOS = `
+      query Alumnos($filtro: AlumnoFiltro) {
+        alumnos(filtro: $filtro) {
+          ${CAMPOS_ALUMNO}
+        }
+      }`;
+
+    async function gql(query, variables = {}) {
+      const respuesta = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, variables })
+      });
+      const resultado = await respuesta.json();
+      if (resultado.errors && resultado.errors.length) {
+        throw new Error(resultado.errors[0].message);
+      }
+      return resultado.data;
+    }
+
+    function escapeHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto ?? '';
+      return div.innerHTML;
+    }
+
+    function tarjetaEnmascarada(numero) {
+      const digitos = (numero || '').replace(/\D/g, '');
+      return digitos.length > 4 ? '•••• ' + digitos.slice(-4) : numero;
+    }
+
+    // ── Registro ──────────────────────────────────────────────
+    const checkboxFamiliar = document.getElementById('familiarInscrito');
+    const campoMatricula = document.getElementById('campoMatricula');
+    const inputMatricula = document.getElementById('matriculaFamiliar');
+    const alertaRegistro = document.getElementById('alertaRegistro');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    checkboxFamiliar.addEventListener('change', (e) => {
+      campoMatricula.style.display = e.target.checked ? 'block' : 'none';
+      if (!e.target.checked) inputMatricula.value = '';
+    });
+
+    document.getElementById('registroForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = 'Guardando…';
+      alertaRegistro.style.display = 'none';
+
+      const familiarActivo = checkboxFamiliar.checked;
+      const input = {
+        nombre: document.getElementById('nombre').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        idiomaNativo: document.getElementById('idiomaNativo').value.trim(),
+        idiomaAprender: document.getElementById('idiomaAprender').value,
+        quienRecomendo: document.getElementById('quienRecomendo').value.trim() || null,
+        familiarInscrito: familiarActivo,
+        matriculaFamiliar: familiarActivo ? inputMatricula.value.trim() : null,
+        nivel: parseInt(document.getElementById('nivel').value, 10) || 1,
+        medioPagoDefault: {
+          numeroTarjeta: document.getElementById('tarjeta').value.trim(),
+          titular: document.getElementById('nombre').value.trim()
+        }
+      };
+
+      try {
+        const data = await gql(MUTATION_REGISTRAR, { input });
+        alertaRegistro.className = 'alert success';
+        alertaRegistro.style.display = 'block';
+        alertaRegistro.innerHTML =
+          `<strong>Registro completado con éxito.</strong><br>` +
+          `Alumno: ${escapeHtml(data.registrarAlumno.nombre)} — ` +
+          `${escapeHtml(data.registrarAlumno.email)}`;
+        document.getElementById('registroForm').reset();
+        campoMatricula.style.display = 'none';
+        cargarAlumnos();
+      } catch (err) {
+        alertaRegistro.className = 'alert error';
+        alertaRegistro.style.display = 'block';
+        alertaRegistro.innerText = 'Error: ' + err.message;
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = 'Completar registro';
+      }
+    });
+
+    // ── Listado ───────────────────────────────────────────────
+    const tabla = document.getElementById('tablaAlumnos');
+    const tablaBody = document.getElementById('tablaBody');
+    const emptyState = document.getElementById('emptyState');
+    const alertaConsulta = document.getElementById('alertaConsulta');
+
+    function renderAlumnos(alumnos) {
+      alertaConsulta.style.display = 'none';
+      tablaBody.innerHTML = '';
+
+      if (!alumnos.length) {
+        tabla.style.display = 'none';
+        emptyState.style.display = 'block';
+        emptyState.innerText = 'Aún no hay alumnos registrados.';
+        return;
+      }
+
+      tabla.style.display = 'table';
+      emptyState.style.display = 'none';
+
+      for (const a of alumnos) {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td><strong>${escapeHtml(a.nombre)}</strong><br><span class="muted">${escapeHtml(a.telefono || '')}</span></td>
+          <td>${escapeHtml(a.email)}</td>
+          <td>${escapeHtml(a.idiomaAprender)}</td>
+          <td>${a.nivel}</td>
+          <td>${a.familiarInscrito
+              ? `<span class="pill descuento">5% · ${escapeHtml(a.matriculaFamiliar || 'N/A')}</span>`
+              : '<span class="muted">—</span>'}</td>
+          <td class="mono">${escapeHtml(tarjetaEnmascarada(a.medioPagoDefault?.numeroTarjeta))}</td>
+          <td class="muted">${a.fechaRegistro ? new Date(a.fechaRegistro).toLocaleDateString('es-MX') : ''}</td>`;
+        tablaBody.appendChild(fila);
+      }
+    }
+
+    async function cargarAlumnos() {
+      emptyState.style.display = 'block';
+      emptyState.innerText = 'Cargando alumnos…';
+      try {
+        const data = await gql(QUERY_ALUMNOS);
+        renderAlumnos(data.alumnos);
+      } catch (err) {
+        tabla.style.display = 'none';
+        emptyState.innerText = 'Error al consultar: ' + err.message;
+      }
+    }
+
+    // ── Búsqueda con filtro ─────────────────────────────────────
+    const camposBusqueda = ['fNombre', 'fEmail', 'fTelefono', 'fIdioma', 'fNivel', 'fFamiliar'];
+
+    function leerFiltro() {
+      const filtro = {};
+      const nombre = document.getElementById('fNombre').value.trim();
+      if (nombre) filtro.nombre = nombre;
+      const email = document.getElementById('fEmail').value.trim();
+      if (email) filtro.email = email;
+      const telefono = document.getElementById('fTelefono').value.trim();
+      if (telefono) filtro.telefono = telefono;
+      const idioma = document.getElementById('fIdioma').value.trim();
+      if (idioma) filtro.idiomaAprender = idioma;
+      const nivel = document.getElementById('fNivel').value;
+      if (nivel) filtro.nivel = parseInt(nivel, 10);
+      const familiar = document.getElementById('fFamiliar').value;
+      if (familiar !== '') filtro.familiarInscrito = familiar === 'true';
+      return filtro;
+    }
+
+    document.getElementById('btnBuscar').addEventListener('click', async () => {
+      const filtro = leerFiltro();
+      if (!Object.keys(filtro).length) {
+        alertaConsulta.className = 'alert error';
+        alertaConsulta.style.display = 'block';
+        alertaConsulta.innerText = 'Escribe al menos un criterio de búsqueda.';
+        return;
+      }
+      alertaConsulta.style.display = 'none';
+      try {
+        const data = await gql(QUERY_ALUMNOS, { filtro });
+        renderAlumnos(data.alumnos);
+        if (!data.alumnos.length) {
+          tabla.style.display = 'none';
+          emptyState.style.display = 'block';
+          emptyState.innerText = 'No se encontraron alumnos con esos criterios.';
+        }
+      } catch (err) {
+        alertaConsulta.className = 'alert error';
+        alertaConsulta.style.display = 'block';
+        alertaConsulta.innerText = 'Error: ' + err.message;
+      }
+    });
+
+    document.getElementById('btnListar').addEventListener('click', () => {
+      camposBusqueda.forEach(id => document.getElementById(id).value = '');
+      cargarAlumnos();
+    });
+    camposBusqueda.forEach(id => document.getElementById(id).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btnBuscar').click(); }
+    }));
+
+    cargarAlumnos();
+  </script>
+</body>
+</html>
