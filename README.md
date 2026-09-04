@@ -1,6 +1,6 @@
 # Práctica 1: Cálculo de tiempo y costo en base a un problema (RUP)
 
-Proyecto desarrollado para la asignatura de Arquitectura e ingeniería de Software
+Proyecto desarrollado para la asignatura de Arquitectura e ingeniería de software
 
 ---
 
@@ -13,13 +13,14 @@ Proyecto desarrollado para la asignatura de Arquitectura e ingeniería de Softwa
 ---
 
 Enlaces públicos de despliegue
-**Servicio REST (Registro de Alumnos):** [https://rest.mango-ataulfo.com/](https://rest.mango-ataulfo.com/)
 
-**Servicio GraphQL (Consultas y Mutaciones):** [https://graphql.mango-ataulfo.com/](https://graphql.mango-ataulfo.com/)
+**Servicio REST (Registro de alumnos):** [https://rest.mango-ataulfo.com/](https://rest.mango-ataulfo.com/)
+
+**Servicio GraphQL (Consultas y mutaciones):** [https://graphql.mango-ataulfo.com/](https://graphql.mango-ataulfo.com/)
 
 **Repositorio:** [https://github.com/Sushikiu/Calculo-de-tiempo-y-costo-en-base-a-un-problema](https://github.com/Sushikiu/Calculo-de-tiempo-y-costo-en-base-a-un-problema)
 
-**Base de Datos Centralizada:** MongoDB Atlas (`clusteracademia.0ybz3gh.mongodb.net / academia_idiomas.alumnos`)
+**Base de datos:** MongoDB Atlas (`clusteracademia.0ybz3gh.mongodb.net / academia_idiomas.alumnos`)
 
 
 ---
@@ -27,9 +28,9 @@ Enlaces públicos de despliegue
 ## Estructura del repositorio
 
 ```text
-├--docs/                        # PDF de entrega
+├--docs/                         # PDF de entrega
 |--casos-de-uso.Palafox          # Modelos de Enterprise Architect y casos de uso
 |--costos-pruebas-Ana            # Excel de costos y pruebas
 ├--rest-api-Susana               # Servicio REST (Node.js, Express, Mongoose, Formulario Web)         
 │--graphql-RestApi-Despliegue    # Servicio GraphQL 
-|--README.md                    # Documentación general
+|--README.md                     # Documentación general
