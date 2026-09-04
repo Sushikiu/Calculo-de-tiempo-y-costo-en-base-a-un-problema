@@ -24,7 +24,7 @@ Registra un nuevo alumno en la base de datos de la academia.
 * **URL en producción:** `https://rest.mango-ataulfo.com/api/alumnos`
 * **Headers:** `Content-Type: application/json`
 
-#### Ejemplo de petición (Payload JSON):
+Ejemplo de petición:
 ```json
 {
   "nombre": "Xavier Lopez Chabelo",
@@ -41,3 +41,39 @@ Registra un nuevo alumno en la base de datos de la academia.
     "titular": "Xavier Lopez Chabelo"
   }
 }
+```
+Respuesta (201 Created):
+```json
+{
+  "mensaje": "Alumno inscrito con éxito",
+  "data": {
+    "_id": "66d8f2b18c7e123456789abc",
+    "nombre": "Xavier Lopez Chabelo",
+    "email": "chabelo@mueblesdico.com",
+    "matriculaFamiliar": "ALUM-1950",
+    "familiarInscrito": true
+  },
+  "credenciales": {
+    "usuario": "xavier.lopez",
+    "claveTemporal": "Academia#2026"
+  }
+}
+```
+## Instalación y ejecución local
+Clona el repositorio y sitúate en el directorio del servicio:
+```bash
+cd services/rest
+```
+Instala las dependencias:
+```bash
+npm install
+```
+Configura las variables de entorno en un archivo .env:
+PORT=3000
+MONGO_URI=mongodb+srv://<usuario>:<password>@clusteracademia.0ybz3gh.mongodb.net/academia_idiomas?retryWrites=true&w=majority
+
+Inicia el servidor:
+```bash
+npm start
+```
+Abre en tu navegador http://localhost:3000 para acceder a la interfaz de registro.
